@@ -1,0 +1,11 @@
+chispa==0.10.1
+numpy==2.1.2
+pandas==2.2.3
+prettytable==3.11.0
+py4j==0.10.9.7
+pyspark==3.5.0
+python-dateutil==2.9.0.post0
+pytz==2024.2
+six==1.16.0
+tzdata==2024.2
+wcwidth==0.2.13
