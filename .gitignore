@@ -3,3 +3,4 @@ output_data/
 test_data/
 .idea/
 *.iml
+.DS_Store
