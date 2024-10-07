@@ -25,21 +25,28 @@ def clean_data(df):
         if duplicate_count > 0:
             df = df.dropDuplicates()  # 1. Uniqueness constraint
 
+        total_rows = df.count()
         columns_with_nulls = [column for column in df.columns if df.filter(f.col(column).isNull()).count() > 0]  # 2. Completeness constraint
 
         for column in columns_with_nulls:
-            if df.schema[column].dataType == DoubleType():
-                mean_value = df.agg(f.mean(column)).collect()[0][0] # we return a list of rows, and we get the first row and first value of the column
-                if mean_value is not None:
-                    df = df.withColumn(column, f.when(f.col(column).isNull(), mean_value).otherwise(f.col(column)))
-            elif df.schema[column].dataType == IntegerType():
-                mean_value = int(df.agg(f.mean(column)).collect()[0][0])
-                if mean_value is not None:
-                    df = df.withColumn(column, f.when(f.col(column).isNull(), mean_value).otherwise(f.col(column)))
-            elif df.schema[column].dataType == StringType():
-                mode_value = df.groupBy(column).count().orderBy(f.desc("count")).first()[0]
-                if mode_value is not None:
-                    df = df.withColumn(column, f.when(f.col(column).isNull(), mode_value).otherwise(f.col(column)))
+            null_count = df.filter(f.col(column).isNull()).count()
+            null_percentage = (null_count / total_rows) * 100
+
+            if null_percentage < 70:
+                if df.schema[column].dataType == DoubleType():
+                    mean_value = df.agg(f.mean(column)).collect()[0][0]
+                    if mean_value is not None:
+                        df = df.withColumn(column, f.when(f.col(column).isNull(), mean_value).otherwise(f.col(column)))
+                elif df.schema[column].dataType == IntegerType():
+                    mean_value = int(df.agg(f.mean(column)).collect()[0][0])
+                    if mean_value is not None:
+                        df = df.withColumn(column, f.when(f.col(column).isNull(), mean_value).otherwise(f.col(column)))
+                elif df.schema[column].dataType == StringType():
+                    mode_value = df.groupBy(column).count().orderBy(f.desc("count")).first()[0]
+                    if mode_value is not None:
+                        df = df.withColumn(column, f.when(f.col(column).isNull(), mode_value).otherwise(f.col(column)))
+            else:
+                df = df.drop(column)
 
         categorical_cols = [column for column in df.columns if df.schema[column].dataType == StringType()]
         for col_name in categorical_cols:
