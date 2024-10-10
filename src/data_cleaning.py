@@ -35,16 +35,13 @@ def clean_data(df):
             if null_percentage < 70:
                 if df.schema[column].dataType == DoubleType():
                     mean_value = df.agg(f.mean(column)).collect()[0][0]
-                    if mean_value is not None:
-                        df = df.withColumn(column, f.when(f.col(column).isNull(), mean_value).otherwise(f.col(column)))
+                    df = df.withColumn(column, f.when(f.col(column).isNull(), mean_value).otherwise(f.col(column)))
                 elif df.schema[column].dataType == IntegerType():
                     mean_value = int(df.agg(f.mean(column)).collect()[0][0])
-                    if mean_value is not None:
-                        df = df.withColumn(column, f.when(f.col(column).isNull(), mean_value).otherwise(f.col(column)))
+                    df = df.withColumn(column, f.when(f.col(column).isNull(), mean_value).otherwise(f.col(column)))
                 elif df.schema[column].dataType == StringType():
                     mode_value = df.groupBy(column).count().orderBy(f.desc("count")).first()[0]
-                    if mode_value is not None:
-                        df = df.withColumn(column, f.when(f.col(column).isNull(), mode_value).otherwise(f.col(column)))
+                    df = df.withColumn(column, f.when(f.col(column).isNull(), mode_value).otherwise(f.col(column)))
             else:
                 df = df.drop(column)
 
