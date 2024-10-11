@@ -6,7 +6,7 @@ Instructions:
 - create a virtual environment using python3 -m venv venv
 - activate the virtual environment using source venv/bin/activate
 - install the dependencies from requirements.txt using pip install -r requirements.txt
-- set the PYTHONPATH to include your directory (e.g. export PYTHONPATH="/Users/alinabaciu/IdeaProjects/Test:$PYTHONPATH"), to let Python
+- set the PYTHONPATH to include your directory (e.g. export PYTHONPATH="/Users/alinabaciu/IdeaProjects/Exercise_AB:$PYTHONPATH"), to let Python
 locate the necessary modules
 - run the application via python -m src.main (and pass the 3 inputs)
 - run the tests via python -m tests.test   
